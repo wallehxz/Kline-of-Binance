@@ -17,4 +17,5 @@ class DayIndicator < ActiveRecord::Base
       self.day_bar.sync_macd
     end
   end
+
 end

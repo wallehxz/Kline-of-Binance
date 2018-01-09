@@ -9,7 +9,8 @@
 
 class Market < ActiveRecord::Base
   self.per_page = 20
-  scope :latest, ->{ order(time_stamp: :desc)}
+  scope :latest, ->{ order(time_stamp: :desc) }
+  scope :timing, ->{ order(time_stamp: :asc) }
 
   def self.generate(block,data,time_stamp)
     m = Market.new

@@ -12,7 +12,9 @@ class Api::MarketsController < ApplicationController
           Market.generate(block.id,ticker,Market.intact_time(ticker[6] / 1000))
         end
       end
+      quote_report(block) rescue nil
     end
+
     render json:{code:200}
   end
 
@@ -31,4 +33,19 @@ class Api::MarketsController < ApplicationController
     end
     render json:{code:200}
   end
+
+  private
+
+    def quote_report(block)
+      if block.last == block.high
+        title = "#{block.block} 最高价"
+        content = "价值: #{block.usdt_price} USDT；"
+        Chain.wechat_notice(title,content)
+      elsif block.last == block.low
+        title = "#{block.block} 最低价"
+        content = "价值: #{block.usdt_price} USDT；"
+        Chain.wechat_notice(title,content)
+      end
+    end
+
 end

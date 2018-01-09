@@ -11,6 +11,7 @@ class Chain < ActiveRecord::Base
   validates_uniqueness_of :block, scope: :currency
   has_many :markets, class_name:'Market'
   has_many :day_bars, class_name:'DayBar'
+  has_one  :usdt, class_name:'Chain', foreign_key:'block', primary_key: 'currency'
 
   def market_name
     "#{self.block}-#{self.currency}"
@@ -29,6 +30,36 @@ class Chain < ActiveRecord::Base
       req.params['limit'] = amount
     end
     current = JSON.parse(res.body)
+  end
+
+  def high
+    self.markets.timing.last(96).map {|x| x.c_price }.max
+  end
+
+  def low
+    self.markets.timing.last(96).map {|x| x.c_price }.min
+  end
+
+  def last
+    self.markets.timing.last.c_price
+  end
+
+  def usdt_price
+    if self.currency != 'USDT'
+      usdt = self.usdt.last
+      return (usdt * self.last).round(2)
+    else
+      return self.last.round(2)
+    end
+  end
+
+  def self.wechat_notice(title,content)
+    push_url = 'https://sc.ftqq.com/SCU16737Tfd4e2c97f2d967e26cd629f1f87ca4345a1bc153e6755.send'
+    res = Faraday.get do |req|
+      req.url push_url
+      req.params['text'] = title
+      req.params['desp'] = content
+    end
   end
 
 end
