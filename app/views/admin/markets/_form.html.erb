@@ -1,0 +1,103 @@
+<%= form_for(['admin',@chain,@ticker]) do |f| %>
+<div class="box-body">
+  <div class="col-md-5">
+    <div class="form-group has-error">
+      <label>买一价</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-cny"></i>
+        </div>
+        <%= f.text_field :bid, class:'form-control', placeholder:'（必填* 市价）' %>
+      </div>
+    </div>
+    <div class="form-group has-error">
+      <label>卖一价</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-won"></i>
+        </div>
+        <%= f.text_field :ask, class:'form-control', placeholder:'（必填* 买价）' %>
+      </div>
+    </div>
+    <div class="form-group has-error">
+      <label>行高价</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-won"></i>
+        </div>
+        <%= f.text_field :high, class:'form-control', placeholder:'（必填* 买价）' %>
+      </div>
+    </div>
+    <div class="form-group has-error">
+      <label>行低价</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-won"></i>
+        </div>
+        <%= f.text_field :low, class:'form-control', placeholder:'（必填* 买价）' %>
+      </div>
+    </div>
+    <div class="form-group has-error">
+      <label>买挂单</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-won"></i>
+        </div>
+        <%= f.text_field :open_buy, class:'form-control', placeholder:'（必填* 买价）' %>
+      </div>
+    </div>
+    <div class="form-group has-error">
+      <label>卖挂单</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-won"></i>
+        </div>
+        <%= f.text_field :open_sell, class:'form-control', placeholder:'（必填* 买价）' %>
+      </div>
+    </div>
+    <div class="form-group has-error">
+      <label>前一天收盘价</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-won"></i>
+        </div>
+        <%= f.text_field :prev_day, class:'form-control', placeholder:'（必填* 买价）' %>
+      </div>
+    </div>
+    <div class="form-group has-error">
+      <label>已交易数量</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-won"></i>
+        </div>
+        <%= f.text_field :volume, class:'form-control', placeholder:'（必填* 买价）' %>
+      </div>
+    </div>
+    <div class="form-group has-error">
+      <label>交易总价值</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-won"></i>
+        </div>
+        <%= f.text_field :base_volume, class:'form-control', placeholder:'（必填* 买价）' %>
+      </div>
+    </div>
+    <div class="form-group has-error">
+      <label>时间戳</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-won"></i>
+        </div>
+        <%= f.text_field :time_stamp, class:'form-control', placeholder:'（必填* 买价）' %>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <hr>
+    <div>
+      <button type="submit" class="btn bg-maroon btn-flat" style="width: 120px">提交</button>
+      <a href="<%= request.referrer %>" class="btn bg-navy btn-flat" style="width: 120px">取消</a>
+    </div>
+  </div>
+</div>
+<% end %>

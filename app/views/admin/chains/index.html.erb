@@ -1,0 +1,81 @@
+<%= content_for(:title,  '区块链列表 | BLOCK') %>
+<section class="content-header">
+  <h1>
+    区块链 <small>信息预览</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-btc"></i> Dashboard</a></li>
+    <li class="active"><i class="fa fa-btc"></i> 区块链</li>
+  </ol>
+</section>
+<section class="content">
+  <div class="box box-primary">
+    <div class="box-header">
+      <a href="<%= new_admin_chain_path %>" class="btn bg-primary btn-flat"><i class="ion-plus"></i> 添加区块</a>
+    </div>
+    <div class="box-body">
+      <div class="row">
+        <div class="col-sm-12">
+          <table id="example1" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
+            <thead>
+            <tr>
+              <th tabindex="0" aria-controls="example1" style="text-align: center">区块</th>
+              <th tabindex="0" aria-controls="example1" style="text-align: center">货币</th>
+              <th tabindex="0" aria-controls="example1" style="text-align: center">名称</th>
+              <th tabindex="0" aria-controls="example1" style="text-align: center;width: 240px">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @chains.each do |item| %>
+              <tr style="text-align: center">
+                <td>
+                  <label class="btn bg-black btn-flat" style="font-size: 16px">
+                    <i class="fa fa-btc"></i>
+                    <%= item.block %>
+                  </label>
+                </td>
+                <td>
+                  <label class="btn bg-black btn-flat" style="font-size: 16px">
+                    <i class="fa fa-money"></i>
+                    <%= item.currency %>
+                  </label>
+                </td>
+                <td>
+                  <label class="btn bg-black btn-flat" style="font-size: 16px">
+                    <i class="fa fa-cc-mastercard"></i>
+                    <%= item.title %>
+                  </label>
+                </td>
+                <td>
+                  <a href="<%= admin_chain_markets_path(item) %>" class="btn bg-green btn-flat">
+                    <i class="fa fa-area-chart"></i>
+                    行情
+                  </a>
+                  <a href="<%= edit_admin_chain_path(item) %>" class="btn bg-orange btn-flat">
+                    <i class="glyphicon glyphicon-edit"></i>
+                    编辑
+                  </a>
+                  <a href="<%= admin_chain_path(item) %>" class="btn bg-red btn-flat" data-method="delete" data-confirm="确定删除该块链吗？">
+                    <i class="glyphicon glyphicon-trash"></i>
+                    删除
+                  </a>
+                </td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-5">
+          <div class="dataTables_info" id="example1_info" role="status" aria-live="polite"><h5>总计：「<%= @chains.count %>」种类</h5></div>
+        </div>
+        <div class="col-sm-12">
+          <div class="dataTables_paginate paging_simple_numbers">
+          <%= will_paginate @chains, :class=>'apple_pagination' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
