@@ -39,11 +39,11 @@ class Api::MarketsController < ApplicationController
     def quote_report(block)
       if block.last == block.high
         title = "#{block.block} 最高价"
-        content = "价值: #{block.usdt_price} USDT；"
+        content = "[一价格 : #{block.last} #{block.currency}一]；[一价值: #{block.usdt_price} USDT一]；"
         Chain.wechat_notice(title,content)
       elsif block.last == block.low
         title = "#{block.block} 最低价"
-        content = "价值: #{block.usdt_price} USDT；"
+        content = "[一价格 : #{block.last} #{block.currency}一]；[一价值: #{block.usdt_price} USDT一]；"
         Chain.wechat_notice(title,content)
       end
     end
