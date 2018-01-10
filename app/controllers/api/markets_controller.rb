@@ -4,7 +4,7 @@ class Api::MarketsController < ApplicationController
     time_stamp = Market.intact_time(Time.now)
     Chain.all.each do |block|
       if block.markets.count > 100
-        ticker = block.get_market('15m',1)[0]
+        ticker = block.get_market('15m',2)[0]
         Market.generate(block.id,ticker,time_stamp) if ticker
       else
         tickers = block.get_market('15m',500)
@@ -22,7 +22,7 @@ class Api::MarketsController < ApplicationController
     time_stamp = Market.intact_time(Time.now)
     Chain.all.each do |block|
       if block.day_bars.count > 30
-        ticker = block.get_market('1d',1)[0]
+        ticker = block.get_market('1d',2)[0]
         DayBar.generate(block.id,ticker,time_stamp) if ticker
       else
         tickers = block.get_market('1d',500)
