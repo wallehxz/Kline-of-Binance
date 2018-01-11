@@ -31,15 +31,8 @@ class Api::MarketsController < ApplicationController
         end
       end
     end
+    hit_clear_week
     render json:{code:200}
-  end
-
-  def hit_clear_week
-    Chain.all.each do |block|
-      if block.markets.count > 762
-        block.markets.timing.first(96).destroy_all
-      end
-    end
   end
 
   private
@@ -53,6 +46,14 @@ class Api::MarketsController < ApplicationController
         title = "#{block.block} 最低价"
         content = "[一价格 : #{block.last} #{block.currency}一]；[一价值: #{block.usdt_price} USDT一]；"
         Chain.wechat_notice(title,content)
+      end
+    end
+
+    def hit_clear_week
+      Chain.all.each do |block|
+        if block.markets.count > 762
+          block.markets.timing.first(96).destroy_all
+        end
       end
     end
 
