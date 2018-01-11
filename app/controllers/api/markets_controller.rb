@@ -4,8 +4,13 @@ class Api::MarketsController < ApplicationController
     time_stamp = Market.intact_time(Time.now)
     Chain.all.each do |block|
       if block.markets.count > 100
-        ticker = block.get_market('15m',2)[0]
-        Market.generate(block.id,ticker,time_stamp) if ticker
+        ticker = block.get_market('15m',2)
+        ticker_0 = ticker[0]
+        ticker_1 = ticker[1]
+        if time_stamp - ticker_0[0] / 1000 > 960
+          ticker_0 = ticker_1
+        end
+        Market.generate(block.id,ticker_0,time_stamp) if ticker_0
       else
         tickers = block.get_market('15m',500)
         tickers.each do |ticker|
