@@ -34,6 +34,14 @@ class Api::MarketsController < ApplicationController
     render json:{code:200}
   end
 
+  def hit_clear_week
+    Chain.all.each do |block|
+      if block.markets.count > 762
+        block.markets.timing.first(96).destroy_all
+      end
+    end
+  end
+
   private
 
     def quote_report(block)
