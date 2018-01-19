@@ -22,7 +22,7 @@ class Balance < ActiveRecord::Base
   # Balance.remote_balances
   def self.remote_balances
     balance_url = 'https://api.binance.com/api/v3/account'
-    timestamp = (Time.now.to_f * 1000 - 5000).to_i
+    timestamp = (Time.now.to_f * 1000).to_i
     params_stirng = "recvWindow=5000&timestamp=#{timestamp}"
     res = Faraday.get do |req|
       req.url balance_url

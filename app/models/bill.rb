@@ -41,7 +41,7 @@ class Bill < ActiveRecord::Base
 
   def self.remote_order(symbol,side,quantity,price)
     order_url = 'https://api.binance.com/api/v3/order'
-    timestamp = (Time.now.to_f * 1000 - 5000).to_i
+    timestamp = (Time.now.to_f * 1000).to_i
     params_stirng = "price=#{price}&quantity=#{quantity}&recvWindow=5000&side=#{side}&symbol=#{symbol}&timeInForce=GTC&timestamp=#{timestamp}&type=LIMIT"
     res = Faraday.post do |req|
       req.url order_url
