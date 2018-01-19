@@ -6,12 +6,16 @@
 require 'openssl'
 OpenSSL::SSL::VERIFY_PEER = OpenSSL::SSL::VERIFY_NONE
 class Chain < ActiveRecord::Base
-
+  self.per_page = 10
   validates_presence_of :block, :currency, :title
   validates_uniqueness_of :block, scope: :currency
   has_many :markets, class_name:'Market'
+  has_many :bills, class_name:'Bill'
   has_many :day_bars, class_name:'DayBar'
   has_one  :usdt, class_name:'Chain', foreign_key:'block', primary_key: 'currency'
+  has_one  :strategy
+  has_one  :balance, class_name:'Balance', primary_key: 'block', foreign_key:'block'
+  has_one  :wallet, class_name:'Balance', primary_key: 'currency', foreign_key:'block'
 
   def market_name
     "#{self.block}-#{self.currency}"
@@ -42,6 +46,26 @@ class Chain < ActiveRecord::Base
 
   def last
     self.markets.timing.last.c_price
+  end
+
+  def retain_balance
+    self.balance.try(:balance) || 0
+  end
+
+  def retain_money
+    self.wallet.try(:balance) || 0
+  end
+
+  def total_bulk
+    self.strategy.try(:bulk) || 0
+  end
+
+  def total_money
+    self.strategy.try(:total) || 0
+  end
+
+  def procure
+    self.strategy.try(:procure) || 0
   end
 
   def usdt_price

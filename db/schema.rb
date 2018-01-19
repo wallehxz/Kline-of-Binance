@@ -11,7 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180101092546) do
+ActiveRecord::Schema.define(version: 20180119024857) do
+
+  create_table "balances", force: :cascade do |t|
+    t.string   "block",      limit: 255
+    t.float    "balance",    limit: 24
+    t.float    "cost",       limit: 24
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "bills", force: :cascade do |t|
+    t.integer  "chain_id",   limit: 8
+    t.integer  "stamp",      limit: 4
+    t.integer  "state",      limit: 4
+    t.float    "amount",     limit: 24
+    t.float    "univalent",  limit: 24
+    t.float    "expense",    limit: 24
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
 
   create_table "chains", force: :cascade do |t|
     t.string   "block",      limit: 255
@@ -54,6 +73,14 @@ ActiveRecord::Schema.define(version: 20180101092546) do
   end
 
   add_index "markets", ["time_stamp"], name: "index_markets_on_time_stamp", using: :btree
+
+  create_table "strategies", force: :cascade do |t|
+    t.integer "chain_id", limit: 4
+    t.float   "total",    limit: 24
+    t.float   "bulk",     limit: 24
+    t.float   "procure",  limit: 24
+    t.boolean "fettle"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "", null: false

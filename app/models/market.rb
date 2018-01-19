@@ -9,6 +9,7 @@
 
 class Market < ActiveRecord::Base
   self.per_page = 20
+  validates_uniqueness_of :time_stamp, scope: :chain_id
   scope :latest, ->{ order(time_stamp: :desc) }
   scope :timing, ->{ order(time_stamp: :asc) }
 

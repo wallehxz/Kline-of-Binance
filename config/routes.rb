@@ -21,6 +21,13 @@ Rails.application.routes.draw do
     resources :chains do
       resources :markets
     end
+    resources :strategies do
+      member do
+        get 'change_fettle'
+      end
+    end
+    resources :bills
+    resources :balances
   end
 
   namespace :api do

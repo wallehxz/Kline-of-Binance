@@ -1,0 +1,68 @@
+<%= form_for(['admin',@bill]) do |f| %>
+<div class="box-body">
+  <div class="col-md-5">
+    <div class="form-group has-error">
+      <label>市场</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-btc"></i>
+        </div>
+        <%= f.select(:chain_id, Chain.all.map {|x| [x.market_name,x.id]}, {prompt:'请选择市场'},{:class => 'form-control'}) %>
+      </div>
+      <%= model_errors(@bill,'chain_id') %>
+    </div>
+
+    <div class="form-group has-error">
+      <label>类型</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-ils"></i>
+        </div>
+        <%= f.select(:stamp, [['BUY',1],['SELL',0]], {prompt:'请选择交易'},{:class => 'form-control'}) %>
+      </div>
+      <%= model_errors(@bill,'stamp') %>
+    </div>
+
+    <div class="form-group has-error">
+      <label>数量</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-snowflake-o"></i>
+        </div>
+        <%= f.text_field :amount, class:'form-control', placeholder:'（必填* 订单数量）' %>
+      </div>
+      <%= model_errors(@bill,'amount') %>
+    </div>
+
+    <div class="form-group has-error">
+      <label>单价</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-cc-mastercard"></i>
+        </div>
+        <%= f.text_field :univalent, class:'form-control', placeholder:'（必填* 单价）' %>
+      </div>
+      <%= model_errors(@bill,'univalent') %>
+    </div>
+
+    <div class="form-group has-error">
+      <label>总计</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-shopping-bag"></i>
+        </div>
+        <%= f.text_field :expense, class:'form-control', placeholder:'（必填* 总计）' %>
+      </div>
+      <%= model_errors(@bill,'expense') %>
+    </div>
+
+  </div>
+  <div class="col-md-12">
+    <hr>
+    <div>
+      <button type="submit" class="btn bg-maroon btn-flat" style="width: 120px">提交</button>
+      <a href="<%= admin_bills_path %>" class="btn bg-navy btn-flat" style="width: 120px">取消</a>
+    </div>
+  </div>
+</div>
+<% end %>

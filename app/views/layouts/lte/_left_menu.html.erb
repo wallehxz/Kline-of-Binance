@@ -41,5 +41,20 @@
         </a>
       </li>
     <% end %>
+    <li class="treeview <%= 'active' if controller_name == 'strategies' %>">
+      <a href="<%= admin_strategies_path %>" target="_self">
+        <i class="fa fa-bandcamp"></i> <span> 收益策略</span>
+      </a>
+    </li>
+    <li class="treeview <%= 'active' if controller_name == 'bills' %>">
+      <a href="<%= admin_bills_path %>" target="_self">
+        <i class="fa fa-sheqel"></i> <span> 买卖定单</span>
+      </a>
+    </li>
+    <li class="treeview <%= 'active' if controller_name == 'balances' %>">
+      <a href="<%= admin_balances_path %>" target="_self">
+        <i class="fa fa-gg-circle"></i> <span> 持有余额</span>
+      </a>
+    </li>
   </ul>
 </section>

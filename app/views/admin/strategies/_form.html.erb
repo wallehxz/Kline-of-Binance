@@ -1,0 +1,49 @@
+<%= form_for(['admin',@point]) do |f| %>
+<div class="box-body">
+  <div class="col-md-5">
+    <div class="form-group has-error">
+      <label>区块链</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-btc"></i>
+        </div>
+        <%= f.select(:chain_id, Chain.all.map{|x| [x.market_name,x.id]}, {prompt:'请选择区块'},{:class => 'form-control'}) %>
+      </div>
+    </div>
+    <div class="form-group has-error">
+      <label>总块量</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-cube"></i>
+        </div>
+        <%= f.text_field :bulk, class:'form-control', placeholder:'（必填* 持有区块最大数量）' %>
+      </div>
+    </div>
+    <div class="form-group has-error">
+      <label> 总价值</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-cc"></i>
+        </div>
+        <%= f.text_field :total, class:'form-control', placeholder:'（必填* 持有区块实际总价值）' %>
+      </div>
+    </div>
+    <div class="form-group has-error">
+      <label>次价值</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-cc-jcb"></i>
+        </div>
+        <%= f.text_field :procure, class:'form-control', placeholder:'（必填* 单次购买的区块数量等价值）' %>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <hr>
+    <div>
+      <button type="submit" class="btn bg-maroon btn-flat" style="width: 120px">提交</button>
+      <a href="<%= request.referrer %>" class="btn bg-navy btn-flat" style="width: 120px">取消</a>
+    </div>
+  </div>
+</div>
+<% end %>

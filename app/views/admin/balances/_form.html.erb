@@ -1,0 +1,43 @@
+<%= form_for(['admin',@balance]) do |f| %>
+<div class="box-body">
+  <div class="col-md-5">
+    <div class="form-group has-error">
+      <label>区块</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-btc"></i>
+        </div>
+        <%= f.text_field :block, class:'form-control', placeholder:'（必填* 区块名称）' %>
+      </div>
+      <%= model_errors(@balance,'block') %>
+    </div>
+    <div class="form-group has-error">
+      <label>数量</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-money"></i>
+        </div>
+        <%= f.text_field :balance, class:'form-control', placeholder:'（必填* 数量）' %>
+      </div>
+      <%= model_errors(@balance,'balance') %>
+    </div>
+    <div class="form-group has-error">
+      <label>成本</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-cc-mastercard"></i>
+        </div>
+        <%= f.text_field :cost, class:'form-control', placeholder:'（必填* 持有成本）' %>
+      </div>
+      <%= model_errors(@balance,'cost') %>
+    </div>
+  </div>
+  <div class="col-md-12">
+    <hr>
+    <div>
+      <button type="submit" class="btn bg-maroon btn-flat" style="width: 120px">提交</button>
+      <a href="<%= admin_balances_path %>" class="btn bg-navy btn-flat" style="width: 120px">取消</a>
+    </div>
+  </div>
+</div>
+<% end %>
