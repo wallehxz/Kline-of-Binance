@@ -83,7 +83,30 @@ class Bill < ActiveRecord::Base
         self.update_attributes(state:1)
       else
         self.update_attributes(state:0)
+        self.sync_balance rescue nil
       end
+    end
+  end
+
+  def sync_balance
+    if self.buy?
+      balance = self.chain.balance
+      balance.balance = balance.balance + self.amount
+      balance.cost = balance.cost + (self.amount * self.chain.usdt_price)
+      balance.save
+      wallet = self.chain.wallet
+      wallet.balance = wallet.balance - self.expense
+      wallet.cost = wallet.cost - (self.amount * self.chain.usdt_price)
+      wallet.save
+    elsif self.sell?
+      balance = self.chain.balance
+      balance.balance = balance.balance - self.amount
+      balance.cost = balance.cost - (self.amount * self.chain.usdt_price)
+      balance.save
+      wallet = self.chain.wallet
+      wallet.balance = wallet.balance + self.expense
+      wallet.cost = wallet.cost + (self.amount * self.chain.usdt_price)
+      wallet.save
     end
   end
 

@@ -1,6 +1,6 @@
 # t.string   "block",      limit: 255
 # t.float    "balance",    limit: 24
-# t.float    "cost",       limit: 24
+# t.float    "cost",       limit: 24 成本等值 USDT
 # t.datetime "created_at",  null: false
 # t.datetime "updated_at",  null: false
 require 'openssl'
@@ -35,12 +35,10 @@ class Balance < ActiveRecord::Base
   end
 
   def self.generate(balance)
-    if bal = Balance.find_by_block(balance['asset'])
-    else
-      bal = Balance.new
-    end
+    bal = Balance.find_by_block(balance['asset']) || Balance.new
     bal.block = balance['asset']
     bal.balance = balance['free'].to_f
+    bal.cost = 0 if bal.cost.nil?
     bal.save
   end
 

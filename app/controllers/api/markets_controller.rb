@@ -43,16 +43,16 @@ class Api::MarketsController < ApplicationController
   private
 
     def quote_report(block)
-      if block.last == block.high
+      if block.last == block.td_high
         title = "#{block.block} 最高价"
-        content = "[一价格 : #{block.last} #{block.currency}一]；[一价值: #{block.usdt_price} USDT一]；"
+        content = "▶价格 : #{block.last} #{block.currency}；▶价值: #{block.usdt_price} USDT ；▍"
         Chain.wechat_notice(title,content)
         if block.strategy.try(:fettle)
           quotes_out(block)
         end
       elsif block.last == block.low
         title = "#{block.block} 最低价"
-        content = "[一价格 : #{block.last} #{block.currency}一]；[一价值: #{block.usdt_price} USDT一]；"
+        content = "▶ 价格 : #{block.last} #{block.currency}一]；▶价值: #{block.usdt_price} USDT；▍"
         Chain.wechat_notice(title,content)
         if block.strategy.try(:fettle)
           quotes_in(block)
@@ -74,18 +74,6 @@ class Api::MarketsController < ApplicationController
     end
 
     def quotes_in(block)
-      balance = block.retain_balance
-      money = block.retain_money
-      usdt_price = block.usdt_price
-      last_price = block.last
-      procure = block.procure
-      amount = (procure / usdt_price).round(2)
-      if balance > amount && money > amount * last_price
-        buy_chain(block.id,amount,last_price)
-      end
-    end
-
-    def quotes_out(block)
       bulk = block.total_bulk
       balance = block.retain_balance
       money = block.retain_money
@@ -93,7 +81,27 @@ class Api::MarketsController < ApplicationController
       last_price = block.last
       procure = block.procure
       amount = (procure / usdt_price).round(2)
-      if bulk > balance && money > amount * last_price
+      if bulk > balance
+        if money > amount * last_price
+          buy_chain(block.id,amount,last_price)
+        elsif money < amount * last_price
+          amount = (money * 0.985 / last_price).round(2)
+          buy_chain(block.id,amount,last_price)
+        end
+      end
+    end
+
+    def quotes_out(block)
+      balance = block.retain_balance
+      money = block.retain_money
+      usdt_price = block.usdt_price
+      last_price = block.last
+      procure = block.procure
+      amount = (procure / usdt_price).round(2)
+      if balance > amount
+        sell_chain(block.id,amount,last_price)
+      else
+        amount = balance.to_d.round(2,:truncate).to_f
         sell_chain(block.id,amount,last_price)
       end
     end
