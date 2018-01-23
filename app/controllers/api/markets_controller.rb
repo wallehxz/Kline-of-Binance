@@ -43,7 +43,7 @@ class Api::MarketsController < ApplicationController
   private
 
     def quote_report(block)
-      if block.last == block.td_high
+      if block.last == block.high
         title = "#{block.block} 最高价"
         content = "▶价格 : #{block.last} #{block.currency}；▶价值: #{block.usdt_price} USDT ；▍"
         Chain.wechat_notice(title,content)
@@ -74,6 +74,7 @@ class Api::MarketsController < ApplicationController
     end
 
     def quotes_in(block)
+      in_price = block.strategy.in_price
       bulk = block.total_bulk
       balance = block.retain_balance
       money = block.retain_money
@@ -81,7 +82,7 @@ class Api::MarketsController < ApplicationController
       last_price = block.last
       procure = block.procure
       amount = (procure / usdt_price).round(2)
-      if bulk > balance
+      if bulk > balance && last_price <= in_price
         if money > amount * last_price
           buy_chain(block.id,amount,last_price)
         elsif money < amount * last_price
@@ -92,17 +93,20 @@ class Api::MarketsController < ApplicationController
     end
 
     def quotes_out(block)
+      out_price = block.strategy.out_price
       balance = block.retain_balance
       money = block.retain_money
       usdt_price = block.usdt_price
       last_price = block.last
       procure = block.procure
       amount = (procure / usdt_price).round(2)
-      if balance > amount
-        sell_chain(block.id,amount,last_price)
-      else
-        amount = balance.to_d.round(2,:truncate).to_f
-        sell_chain(block.id,amount,last_price)
+      if last_price >= out_price
+        if balance > amount
+          sell_chain(block.id,amount,last_price)
+        else
+          amount = balance.to_d.round(2,:truncate).to_f
+          sell_chain(block.id,amount,last_price)
+        end
       end
     end
 

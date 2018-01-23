@@ -54,6 +54,6 @@ class Admin::StrategiesController < Admin::BaseController
     end
 
     def strategy_params
-      params.require(:strategy).permit(:chain_id, :total, :bulk, :procure, :fettle)
+      params.require(:strategy).permit(:chain_id, :total, :bulk, :procure, :in_price, :out_price, :fettle)
     end
 end

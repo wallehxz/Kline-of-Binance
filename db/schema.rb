@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180119024857) do
+ActiveRecord::Schema.define(version: 20180123012733) do
 
   create_table "balances", force: :cascade do |t|
     t.string   "block",      limit: 255
@@ -75,11 +75,13 @@ ActiveRecord::Schema.define(version: 20180119024857) do
   add_index "markets", ["time_stamp"], name: "index_markets_on_time_stamp", using: :btree
 
   create_table "strategies", force: :cascade do |t|
-    t.integer "chain_id", limit: 4
-    t.float   "total",    limit: 24
-    t.float   "bulk",     limit: 24
-    t.float   "procure",  limit: 24
+    t.integer "chain_id",  limit: 4
+    t.float   "total",     limit: 24
+    t.float   "bulk",      limit: 24
+    t.float   "procure",   limit: 24
     t.boolean "fettle"
+    t.float   "in_price",  limit: 24
+    t.float   "out_price", limit: 24
   end
 
   create_table "users", force: :cascade do |t|

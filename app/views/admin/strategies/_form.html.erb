@@ -37,6 +37,24 @@
         <%= f.text_field :procure, class:'form-control', placeholder:'（必填* 单次购买的区块数量等价值）' %>
       </div>
     </div>
+    <div class="form-group has-error">
+      <label>买入价</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-circle"></i>
+        </div>
+        <%= f.text_field :in_price, class:'form-control', placeholder:'（必填* 买入的最高价）' %>
+      </div>
+    </div>
+    <div class="form-group has-error">
+      <label>卖出价</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-circle-o"></i>
+        </div>
+        <%= f.text_field :out_price, class:'form-control', placeholder:'（必填* 卖出的最低价）' %>
+      </div>
+    </div>
   </div>
   <div class="col-md-12">
     <hr>
