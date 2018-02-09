@@ -10,22 +10,23 @@ class Api::MarketsController < ApplicationController
         if time_stamp - ticker_0[0] / 1000 > 960
           ticker_0 = ticker_1
         end
-        Market.generate(block.id,ticker_0,time_stamp) if ticker_0
+        if ticker_0 && (ticker_0[0] / 1000 + 1000) > time_stamp
+          Market.generate(block.id,ticker_0,time_stamp)
+        end
       else
         tickers = block.get_market('15m',500)
         tickers.each do |ticker|
           Market.generate(block.id,ticker,Market.intact_time(ticker[6] / 1000))
         end
       end
-      quote_report(block) rescue nil
+      # quote_report(block) rescue nil
     end
-
     render json:{code:200}
   end
 
   def hit_day_bar
     Chain.all.each do |block|
-      if block.day_bars.count > 30
+      if block.day_bars.count > 7
         ticker = block.get_market('1d',2)[0]
         DayBar.generate(block.id,ticker,Market.intact_time(ticker[6] / 1000)) if ticker
       else
