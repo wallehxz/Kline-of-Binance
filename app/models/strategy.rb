@@ -8,6 +8,7 @@
 
 class Strategy  < ActiveRecord::Base
   belongs_to :chain
+  scope :state_dc, ->{ order(fettle: :desc) }
   self.per_page = 10
 
 end

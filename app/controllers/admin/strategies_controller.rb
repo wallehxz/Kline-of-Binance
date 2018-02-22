@@ -2,7 +2,7 @@ class Admin::StrategiesController < Admin::BaseController
   before_action :set_strategy, only:[:edit, :update, :destroy, :change_fettle]
 
   def index
-    @points = Strategy.paginate(page:params[:page])
+    @points = Strategy.state_dc.paginate(page:params[:page])
   end
 
   def new
