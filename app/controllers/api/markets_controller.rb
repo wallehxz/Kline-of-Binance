@@ -19,7 +19,7 @@ class Api::MarketsController < ApplicationController
           Market.generate(block.id,ticker,Market.intact_time(ticker[6] / 1000))
         end
       end
-      # quote_report(block) rescue nil
+      quote_report(block) if block.strategy.try(:fettle)
     end
     render json:{code:200}
   end
@@ -48,16 +48,12 @@ class Api::MarketsController < ApplicationController
         title = "#{block.block} 最高价"
         content = "▶价格 : #{block.last} #{block.currency}；▶价值: #{block.usdt_price} USDT ；▍"
         Chain.wechat_notice(title,content)
-        if block.strategy.try(:fettle)
-          quotes_out(block)
-        end
+        quotes_out(block)
       elsif block.last == block.low
         title = "#{block.block} 最低价"
         content = "▶ 价格 : #{block.last} #{block.currency}一]；▶价值: #{block.usdt_price} USDT；▍"
         Chain.wechat_notice(title,content)
-        if block.strategy.try(:fettle)
-          quotes_in(block)
-        end
+        quotes_in(block)
       end
     end
 
@@ -74,6 +70,7 @@ class Api::MarketsController < ApplicationController
       Balance.sync_balances
     end
 
+    #买入货币的策略
     def quotes_in(block)
       in_price = block.strategy.in_price
       bulk = block.total_bulk
@@ -93,9 +90,10 @@ class Api::MarketsController < ApplicationController
       end
     end
 
+    #卖出货币的策略
     def quotes_out(block)
       out_price = block.strategy.out_price
-      balance = block.retain_balance
+      balance = block.retain_balance #当前所持有的货币数量
       money = block.retain_money
       usdt_price = block.usdt_price
       last_price = block.last
