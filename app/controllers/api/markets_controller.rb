@@ -134,8 +134,10 @@ class Api::MarketsController < ApplicationController
       out_price = block.strategy.out_price
       in_price = block.strategy.in_price
       if last_price < in_price
+        Balance.sync_balances rescue nil
         high_in(block)
       elsif last_price > out_price
+        Balance.sync_balances rescue nil
         high_out(block)
       end
     end
