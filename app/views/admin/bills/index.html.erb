@@ -34,7 +34,7 @@
                 <td><%= item.amount %></td>
                 <td><%= item.univalent %></td>
                 <td><%= item.expense %></td>
-                <td><%= item.state_cn %></td>
+                <td><%= item.state_cn %><br><%= item.created_at.strftime('%Y-%m-%d %H:%M') %></td>
                 <td>
                   <a href="<%= edit_admin_bill_path(item) %>" class="btn bg-orange btn-flat">
                     <i class="glyphicon glyphicon-edit"></i>

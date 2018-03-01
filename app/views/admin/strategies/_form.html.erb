@@ -2,6 +2,16 @@
 <div class="box-body">
   <div class="col-md-5">
     <div class="form-group has-error">
+      <label>交易状态</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-money"></i>
+        </div>
+        <%= f.select(:fettle, [['开启',true],['关闭',false]], {prompt:'请选择货币'},{:class => 'form-control'}) %>
+      </div>
+      <%= model_errors(@point,'fettle') %>
+    </div>
+    <div class="form-group has-error">
       <label>区块链</label>
       <div class="input-group">
         <div class="input-group-addon">

@@ -10,11 +10,12 @@ class Balance < ActiveRecord::Base
   scope :amount_dc, -> { order(balance: :desc)}
   # Balance.sync_balances
   def self.sync_balances
+    chains = Chain.all.map{|x| x.block } << 'USDT'
     balances = Balance.remote_balances
     balances = balances['balances']
     balances.each do |balance|
       if balance['free'].to_f > 0
-        Balance.generate(balance)
+        Balance.generate(balance) if chains.include?(balance['asset'])
       end
     end
   end

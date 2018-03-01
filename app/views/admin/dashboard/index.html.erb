@@ -5,7 +5,7 @@
 <% pre_day = (Date.current - 1.day).to_s %>
 <section class="content-header">
   <h1>
-    <%= @block.market_name %> 每刻行情  <small>信息预览</small>
+    <%= @block.market_name %> 五分行情  <small>信息预览</small>
   </h1>
   <ol class="breadcrumb">
     <li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
@@ -135,7 +135,7 @@
     dataZoom: [
     {
       type: 'inside',
-      start: 0,
+      start: 50,
       end: 100
     },
     {
