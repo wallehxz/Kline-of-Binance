@@ -159,7 +159,7 @@ class Api::MarketsController < ApplicationController
       amount = (procure / usdt_price).round(2)
       univalent = block.last
       hold_money = block.retain_money
-      max_amount = hold_money / univalent
+      max_amount = (hold_money / univalent).to_d.round(2,:truncate).to_f
       amount = max_amount > amount ? amount : max_amount
       if amount > 1
         buy_chain(block.id,amount,univalent)
