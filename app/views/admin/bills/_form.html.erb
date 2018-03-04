@@ -18,7 +18,7 @@
         <div class="input-group-addon">
           <i class="fa fa-ils"></i>
         </div>
-        <%= f.select(:stamp, [['BUY',1],['SELL',0]], {prompt:'请选择交易'},{:class => 'form-control'}) %>
+        <%= f.select(:stamp, [['[买入] BUY',1],['[卖出] SELL',0]], {prompt:'请选择交易类型'},{:class => 'form-control'}) %>
       </div>
       <%= model_errors(@bill,'stamp') %>
     </div>
@@ -55,7 +55,17 @@
       </div>
       <%= model_errors(@bill,'expense') %>
     </div>
-
+    <% if @bill.cause %>
+    <div class="form-group has-error">
+      <label>原因</label>
+      <div class="input-group">
+        <div class="input-group-addon">
+          <i class="fa fa-shopping-bag"></i>
+        </div>
+        <%= f.text_area :cause, class:'form-control' %>
+      </div>
+    </div>
+    <% end %>
   </div>
   <div class="col-md-12">
     <hr>

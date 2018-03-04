@@ -157,13 +157,15 @@ class Api::MarketsController < ApplicationController
 
     def high_in(block)
       procure = block.procure
+      bulk = block.total_bulk
+      balance = block.retain_balance
       usdt_price = block.usdt_price
       amount = (procure / usdt_price).round(2)
       univalent = block.last
       hold_money = block.retain_money
       max_amount = (hold_money / univalent).to_d.round(2,:truncate).to_f
       amount = max_amount > amount ? amount : max_amount
-      if amount > 1
+      if amount > 1 && bulk > balance
         buy_chain(block.id,amount,univalent)
       end
     end

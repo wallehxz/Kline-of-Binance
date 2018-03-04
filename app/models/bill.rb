@@ -4,6 +4,9 @@
 # t.float    "amount",     limit: 24
 # t.float    "univalent",  limit: 24
 # t.float    "expense",    limit: 24
+# t.integer  "failure",    limit: 4,   default: 1
+# t.string   "cause",      limit: 255
+# t.integer  "genre",      limit: 4,   default: 1
 # t.datetime "created_at",  null: false
 # t.datetime "updated_at",  null: false
 require 'openssl'
@@ -12,7 +15,7 @@ class Bill < ActiveRecord::Base
   belongs_to :chain
   validates_presence_of :chain_id, :amount, :univalent, :stamp
   after_create :caculate_expense
-  after_save :sync_order
+  after_create :sync_order
 
   def state_cn
     {1=>'未完成',0=>'已完成'}[self.state]
@@ -41,8 +44,8 @@ class Bill < ActiveRecord::Base
 
   def self.remote_order(symbol,side,quantity,price)
     order_url = 'https://api.binance.com/api/v3/order'
-    timestamp = (Time.now.to_f * 1000).to_i
-    params_stirng = "price=#{price}&quantity=#{quantity}&recvWindow=5000&side=#{side}&symbol=#{symbol}&timeInForce=GTC&timestamp=#{timestamp}&type=LIMIT"
+    timestamp = (Time.now.to_f * 1000).to_i - 2000
+    params_stirng = "price=#{price}&quantity=#{quantity}&recvWindow=10000&side=#{side}&symbol=#{symbol}&timeInForce=GTC&timestamp=#{timestamp}&type=LIMIT"
     res = Faraday.post do |req|
       req.url order_url
       req.headers['X-MBX-APIKEY'] = Settings.apiKey
@@ -51,7 +54,7 @@ class Bill < ActiveRecord::Base
       req.params['type'] = 'LIMIT'
       req.params['quantity'] = quantity
       req.params['price'] = price
-      req.params['recvWindow'] = 5000
+      req.params['recvWindow'] = 10000
       req.params['timeInForce'] = 'GTC'
       req.params['timestamp'] = timestamp
       req.params['signature'] = Bill.signed(params_stirng)
@@ -72,7 +75,7 @@ class Bill < ActiveRecord::Base
   end
 
   def sync_order
-    if self.state.nil?
+    if self.state.nil? || self.state == 1
       res = {}
       if self.buy?
         res = Bill.buy_order(self.chain.symbol,self.amount,self.univalent)
@@ -80,7 +83,9 @@ class Bill < ActiveRecord::Base
         res = Bill.sell_order(self.chain.symbol,self.amount,self.univalent)
       end
       if res['code']
-        self.update_attributes(state:1)
+        self.update_attributes(state:1, failure:self.failure + 1, cause:res['msg'])
+        self.sync_order if self.failure < 5
+        self.destroy if self.failure == 5 && self.state == 1
       else
         self.update_attributes(state:0)
         self.sync_balance rescue nil

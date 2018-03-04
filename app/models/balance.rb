@@ -23,12 +23,12 @@ class Balance < ActiveRecord::Base
   # Balance.remote_balances
   def self.remote_balances
     balance_url = 'https://api.binance.com/api/v3/account'
-    timestamp = (Time.now.to_f * 1000).to_i
-    params_stirng = "recvWindow=5000&timestamp=#{timestamp}"
+    timestamp = (Time.now.to_f * 1000).to_i - 2000
+    params_stirng = "recvWindow=10000&timestamp=#{timestamp}"
     res = Faraday.get do |req|
       req.url balance_url
       req.headers['X-MBX-APIKEY'] = Settings.apiKey
-      req.params['recvWindow'] = 5000
+      req.params['recvWindow'] = 10000
       req.params['timestamp'] = timestamp
       req.params['signature'] = Bill.signed(params_stirng)
     end
