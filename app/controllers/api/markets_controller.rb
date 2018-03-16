@@ -44,16 +44,27 @@ class Api::MarketsController < ApplicationController
   private
 
     def quote_report(block)
-      if block.last == block.high
+      last_price = block.last
+      high_price = block.high
+      low_price = block.low
+      if last_price == high_price
         title = "#{block.block} 最高价"
-        content = "价格 : #{block.last} #{block.currency}井井井价值: #{block.usdt_price} USDT"
+        content = "价格 : #{last_price} #{block.currency},价值: #{block.usdt_price} USDT"
         Chain.wechat_notice(title,content)
         quotes_out(block)
-      elsif block.last == block.low
+        profit = profit(high_price,low_price)
+        if profit > 20
+          high_sms_tip(block,profit)
+        end
+      elsif last_price == low_price
         title = "#{block.block} 最低价"
-        content = "价格 : #{block.last} #{block.currency}井井井价值: #{block.usdt_price} USDT"
+        content = "价格 : #{last_price} #{block.currency},价值: #{block.usdt_price} USDT"
         Chain.wechat_notice(title,content)
         quotes_in(block)
+        profit = profit(low_price,high_price)
+        if profit < -20
+          low_sms_tip(block,profit)
+        end
       else
         high_quotes(block)
       end
@@ -170,4 +181,20 @@ class Api::MarketsController < ApplicationController
       end
     end
 
+    def profit(new_price, old_price)
+      percent = (new_price - old_price) / old_price
+      (percent * 100).to_i
+    end
+
+    def high_sms_tip(block,profit)
+      mobile = '18211109527'
+      content = "#{block.block},价格:#{block.last} #{block.currency},价值: #{block.usdt_price} USDT,涨幅: #{profit}%"
+      Chain.sms_yunpian(mobile,content)
+    end
+
+    def low_sms_tip(block,profit)
+      mobile = '18211109527'
+      content = "价格 : #{block.last} #{block.currency},价值: #{block.usdt_price} USDT,跌幅: #{profit}%"
+      Chain.sms_yunpian(mobile,content)
+    end
 end

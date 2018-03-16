@@ -86,4 +86,14 @@ class Chain < ActiveRecord::Base
     end
   end
 
+  def self.sms_yunpian(mobile,content)
+    yunpian = 'https://sms.yunpian.com/v2/sms/tpl_single_send.json'
+    params = {}
+    params[:apikey] = Settings.yunpian_key
+    params[:tpl_id] = '1950240'
+    params[:mobile] = mobile
+    params[:tpl_value] = URI::escape('#report#') + '='+ URI::escape(content)
+    Faraday.send(:post,yunpian, params)
+  end
+
 end
