@@ -85,7 +85,7 @@ class Bill < ActiveRecord::Base
       if res['code']
         self.update_attributes(state:1, failure:self.failure + 1, cause:res['msg'])
         self.sync_order if self.failure < 3
-        self.destroy if self.failure == 3 && self.state == 1
+        # self.destroy if self.failure == 3 && self.state == 1
       else
         self.update_attributes(state:0)
         self.sync_balance rescue nil
