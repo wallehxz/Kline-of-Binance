@@ -85,7 +85,7 @@ class Api::MarketsController < ApplicationController
       Balance.sync_balances rescue nil
       balance = block.retain_balance
       amount = balance * ratio > 100 ? balance * ratio : balance
-      amount = amount.to_d.round(2,:truncate).to_f
+      amount = amount.to_i
       last_price = block.last
       if amount > 10
         sell_chain(block.id,amount,last_price)
@@ -98,7 +98,7 @@ class Api::MarketsController < ApplicationController
       last_price = block.last
       amount = (money * 0.99 / last_price)
       amount = amount * ratio > 100 ? amount * ratio : amount
-      amount = amount.to_d.round(2,:truncate).to_f
+      amount = amount.to_i
       if amount > 10
         buy_chain(block.id,amount,last_price)
       end
