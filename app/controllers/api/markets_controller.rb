@@ -51,7 +51,7 @@ class Api::MarketsController < ApplicationController
         title = "#{block.block} 最高价"
         content = "价格 : #{last_price} #{block.currency},价值: #{block.usdt_price} USDT"
         Chain.wechat_notice(title,content)
-        quotes_out(block)
+        freq_quotes_out(block,0.33)
         profit = profit(high_price,low_price)
         if profit > 20
           high_sms_tip(block,profit)
@@ -60,13 +60,11 @@ class Api::MarketsController < ApplicationController
         title = "#{block.block} 最低价"
         content = "价格 : #{last_price} #{block.currency},价值: #{block.usdt_price} USDT"
         Chain.wechat_notice(title,content)
-        quotes_in(block)
+        freq_quotes_in(block,0.33)
         profit = profit(low_price,high_price)
         if profit < -20
           low_sms_tip(block,profit)
         end
-      else
-        high_quotes(block)
       end
     end
 
@@ -81,6 +79,29 @@ class Api::MarketsController < ApplicationController
 
     def hit_balances
       Balance.sync_balances
+    end
+
+    def freq_quotes_out(block,ratio)
+      Balance.sync_balances rescue nil
+      balance = block.retain_balance
+      amount = balance * ratio > 100 ? balance * ratio : balance
+      amount = amount.to_d.round(2,:truncate).to_f
+      last_price = block.last
+      if amount > 10
+        sell_chain(block.id,amount,last_price)
+      end
+    end
+
+    def freq_quotes_in(block,ratio)
+      Balance.sync_balances rescue nil
+      money = block.retain_money
+      last_price = block.last
+      amount = (money * 0.99 / last_price)
+      amount = amount * ratio > 100 ? amount * ratio : amount
+      amount = amount.to_d.round(2,:truncate).to_f
+      if amount > 10
+        buy_chain(block.id,amount,last_price)
+      end
     end
 
     #买入货币的策略
