@@ -37,11 +37,11 @@ class Chain < ActiveRecord::Base
   end
 
   def high
-    self.markets.timing.last(288).map {|x| x.c_price }.max
+    self.markets.timing.last(96).map {|x| x.c_price }.max
   end
 
   def low
-    self.markets.timing.last(288).map {|x| x.c_price }.min
+    self.markets.timing.last(96).map {|x| x.c_price }.min
   end
 
   def last
