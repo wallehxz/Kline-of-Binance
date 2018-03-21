@@ -104,7 +104,7 @@ class Bill < ActiveRecord::Base
       wallet.cost = wallet.cost - (self.amount * self.chain.usdt_price)
       wallet.save
       strategy = self.chain.strategy
-      strategy.in_price = self.univalent * 0.98
+      strategy.in_price = self.univalent * 0.975
       strategy.save
     elsif self.sell?
       balance = self.chain.balance
@@ -116,7 +116,7 @@ class Bill < ActiveRecord::Base
       wallet.cost = wallet.cost + (self.amount * self.chain.usdt_price)
       wallet.save
       strategy = self.chain.strategy
-      strategy.out_price = self.univalent * 1.02
+      strategy.out_price = self.univalent * 1.025
       strategy.save
     end
   end

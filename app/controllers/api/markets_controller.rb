@@ -19,7 +19,7 @@ class Api::MarketsController < ApplicationController
           Market.generate(block.id,ticker,Market.intact_time(ticker[6] / 1000))
         end
       end
-      quote_report(block) if block.strategy.try(:fettle)
+      quote_report(block)
     end
     render json:{code:200}
   end
@@ -51,18 +51,18 @@ class Api::MarketsController < ApplicationController
         title = "#{block.block} 最高价"
         content = "价格 : #{last_price} #{block.currency},价值: #{block.usdt_price} USDT"
         Chain.wechat_notice(title,content)
-        freq_quotes_out(block,0.33)
+        freq_quotes_out(block,0.33) if block.strategy.try(:fettle)
         profit = profit(high_price,low_price)
-        if profit > 20
+        if profit > 10
           high_sms_tip(block,profit)
         end
       elsif last_price == low_price
         title = "#{block.block} 最低价"
         content = "价格 : #{last_price} #{block.currency},价值: #{block.usdt_price} USDT"
         Chain.wechat_notice(title,content)
-        freq_quotes_in(block,0.33)
+        freq_quotes_in(block,0.33) if block.strategy.try(:fettle)
         profit = profit(low_price,high_price)
-        if profit < -20
+        if profit < -10
           low_sms_tip(block,profit)
         end
       end
@@ -83,23 +83,25 @@ class Api::MarketsController < ApplicationController
 
     def freq_quotes_out(block,ratio)
       Balance.sync_balances rescue nil
+      out_price = block.strategy.out_price
       balance = block.retain_balance
       amount = balance * ratio > 100 ? balance * ratio : balance
       amount = amount.to_i
       last_price = block.last
-      if amount > 10
-        sell_chain(block.id,amount,last_price)
+      if amount > 10 && last_price > out_price
+        sell_chain(block.id,amount, last_price)
       end
     end
 
     def freq_quotes_in(block,ratio)
       Balance.sync_balances rescue nil
+      in_price = block.strategy.in_price
       money = block.retain_money
       last_price = block.last
       amount = (money * 0.99 / last_price)
       amount = amount * ratio > 100 ? amount * ratio : amount
       amount = amount.to_i
-      if amount > 10
+      if amount > 10 && last_price <= in_price
         buy_chain(block.id,amount,last_price)
       end
     end
