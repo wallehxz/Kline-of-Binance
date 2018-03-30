@@ -53,7 +53,7 @@ class Api::MarketsController < ApplicationController
         Chain.wechat_notice(title,content)
         freq_quotes_out(block,0.33) if block.strategy.try(:fettle)
         profit = profit(high_price,low_price)
-        if profit > 10
+        if profit > 10 && work_time
           high_sms_tip(block,profit)
         end
       elsif last_price == low_price
@@ -62,7 +62,7 @@ class Api::MarketsController < ApplicationController
         Chain.wechat_notice(title,content)
         freq_quotes_in(block,0.33) if block.strategy.try(:fettle)
         profit = profit(low_price,high_price)
-        if profit < -10
+        if profit < -10 && work_time
           low_sms_tip(block,profit)
         end
       end
@@ -204,6 +204,12 @@ class Api::MarketsController < ApplicationController
       end
     end
 
+  def work_time
+    current = Time.now.strftime('%H').to_i
+    return true if  current > 9 && current < 22
+    nil
+  end
+
     def profit(new_price, old_price)
       percent = (new_price - old_price) / old_price
       (percent * 100).to_i
@@ -217,7 +223,7 @@ class Api::MarketsController < ApplicationController
 
     def low_sms_tip(block,profit)
       mobile = '18211109527'
-      content = "价格 : #{block.last} #{block.currency},价值: #{block.usdt_price} USDT,跌幅: #{profit}%"
+      content = "#{block.block},价格 : #{block.last} #{block.currency},价值: #{block.usdt_price} USDT,跌幅: #{profit}%"
       Chain.sms_yunpian(mobile,content)
     end
 end
