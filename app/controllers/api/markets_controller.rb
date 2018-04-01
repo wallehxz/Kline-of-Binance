@@ -41,6 +41,10 @@ class Api::MarketsController < ApplicationController
     render json:{code:200}
   end
 
+  def hit_balance
+    hit_balances
+  end
+
   private
 
     def quote_report(block)

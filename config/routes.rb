@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   namespace :api do
     get 'hit_markets', to:'markets#hit_markets'
     get 'hit_day_bar', to:'markets#hit_day_bar'
+    get 'hit_balance', to:'markets#hit_balance'
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
