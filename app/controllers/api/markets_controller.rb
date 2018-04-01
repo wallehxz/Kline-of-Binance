@@ -65,7 +65,7 @@ class Api::MarketsController < ApplicationController
         title = "#{block.block} 最低价"
         content = "价格 : #{last_price} #{block.currency},价值: #{block.usdt_price} USDT"
         Chain.wechat_notice(title,content)
-        freq_quotes_in(block,0.33) if block.strategy.try(:fettle)
+        freq_quotes_in(block) if block.strategy.try(:fettle)
         profit = profit(low_price,high_price)
         if profit < -10 && work_time
           low_sms_tip(block,profit)
@@ -89,23 +89,24 @@ class Api::MarketsController < ApplicationController
     def freq_quotes_out(block,ratio)
       Balance.sync_balances rescue nil
       out_price = block.strategy.out_price
+      last_price = block.last
       balance = block.retain_balance
       amount = balance * ratio > 0.1 ? balance * ratio : balance
-      amount = amount.to_i
-      last_price = block.last
+      amount = amount.to_d.round(2,:truncate).to_f
       if amount > 0.1 && last_price >= out_price
         sell_chain(block.id,amount, last_price)
       end
     end
 
-    def freq_quotes_in(block,ratio)
+    def freq_quotes_in(block)
       Balance.sync_balances rescue nil
       in_price = block.strategy.in_price
       money = block.retain_money
+      procure = block.procure
       last_price = block.last
+      money = money > procure ? procure : money
       amount = (money * 0.99 / last_price)
-      amount = amount * ratio > 0.1 ? amount * ratio : amount
-      amount = amount.to_i
+      amount = amount.to_d.round(2,:truncate).to_f
       if amount > 0.1 && last_price <= in_price
         buy_chain(block.id,amount,last_price)
       end
