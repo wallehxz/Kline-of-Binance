@@ -14,7 +14,7 @@ class Balance < ActiveRecord::Base
     balances = Balance.remote_balances
     balances = balances['balances']
     balances.each do |balance|
-      if balance['free'].to_f > 0
+      if balance['free'].to_f > 0.1
         Balance.generate(balance) if chains.include?(balance['asset'])
       end
     end

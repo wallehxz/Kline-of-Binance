@@ -43,6 +43,7 @@ class Api::MarketsController < ApplicationController
 
   def hit_balance
     hit_balances
+    render json:{code:200}
   end
 
   private
@@ -89,10 +90,10 @@ class Api::MarketsController < ApplicationController
       Balance.sync_balances rescue nil
       out_price = block.strategy.out_price
       balance = block.retain_balance
-      amount = balance * ratio > 100 ? balance * ratio : balance
+      amount = balance * ratio > 0.1 ? balance * ratio : balance
       amount = amount.to_i
       last_price = block.last
-      if amount > 10 && last_price >= out_price
+      if amount > 0.1 && last_price >= out_price
         sell_chain(block.id,amount, last_price)
       end
     end
@@ -103,9 +104,9 @@ class Api::MarketsController < ApplicationController
       money = block.retain_money
       last_price = block.last
       amount = (money * 0.99 / last_price)
-      amount = amount * ratio > 100 ? amount * ratio : amount
+      amount = amount * ratio > 0.1 ? amount * ratio : amount
       amount = amount.to_i
-      if amount > 10 && last_price <= in_price
+      if amount > 0.1 && last_price <= in_price
         buy_chain(block.id,amount,last_price)
       end
     end
