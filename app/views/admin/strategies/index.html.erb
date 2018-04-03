@@ -19,9 +19,9 @@
           <table id="example1" class="table table-bordered table-striped dataTable" role="grid" aria-describedby="example1_info">
             <thead>
             <tr>
-              <th tabindex="0" aria-controls="example1" style="text-align: center">区块</th>
-              <th tabindex="0" aria-controls="example1" style="text-align: center">总块量</th>
-              <th tabindex="0" aria-controls="example1" style="text-align: center">次价值</th>
+              <th tabindex="0" aria-controls="example1" style="text-align: center">区块链</th>
+              <th tabindex="0" aria-controls="example1" style="text-align: center">单价值</th>
+              <th tabindex="0" aria-controls="example1" style="text-align: center">成本价</th>
               <th tabindex="0" aria-controls="example1" style="text-align: center">买入价</th>
               <th tabindex="0" aria-controls="example1" style="text-align: center">卖出价</th>
               <th tabindex="0" aria-controls="example1" style="text-align: center">状态</th>
@@ -37,8 +37,8 @@
                     <%= item.chain.try(:market_name) %>
                   </label>
                 </td>
-                <td><%= item.bulk %></td>
                 <td><%= item.procure %></td>
+                <td><%= item.bulk %></td>
                 <td><%= item.in_price %></td>
                 <td><%= item.out_price %></td>
                 <td>

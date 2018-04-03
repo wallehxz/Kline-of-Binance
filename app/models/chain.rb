@@ -64,6 +64,14 @@ class Chain < ActiveRecord::Base
     self.strategy.try(:total) || 0
   end
 
+  def in_price
+    self.strategy.try(:in_price) || 0
+  end
+
+  def out_price
+    self.strategy.try(:out_price) || 0
+  end
+
   def procure
     self.strategy.try(:procure) || 0
   end

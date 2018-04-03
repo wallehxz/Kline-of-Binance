@@ -56,7 +56,7 @@ class Api::MarketsController < ApplicationController
         title = "#{block.block} 最高价"
         content = "价格 : #{last_price} #{block.currency},价值: #{block.usdt_price} USDT"
         Chain.wechat_notice(title,content)
-        freq_quotes_out(block,0.33) if block.strategy.try(:fettle)
+        freq_quotes_out(block,0.25) if block.strategy.try(:fettle)
         profit = profit(high_price,low_price)
         if profit > 10 && work_time
           high_sms_tip(block,profit)
@@ -70,14 +70,20 @@ class Api::MarketsController < ApplicationController
         if profit < -10 && work_time
           low_sms_tip(block,profit)
         end
+      elsif block.retain_balance > 0.1
+        amount = block.retain_balance.to_d.round(2,:truncate).to_f
+        bulk = block.total_bulk #成本价
+        if last_price < bulk && block.strategy.try(:fettle)
+          sell_chain(block.id,amount,last_price)
+        end
       end
     end
 
     def hit_clear_week
       Chain.all.each do |block|
-        if block.markets.count > 576
+        if block.markets.count > 672
           total = block.markets.timing.count
-          block.markets.timing.first(total - 576).map {|x| x.destroy }
+          block.markets.timing.first(total - 672).map {|x| x.destroy }
         end
       end
     end
